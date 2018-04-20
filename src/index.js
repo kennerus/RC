@@ -5,9 +5,7 @@ import List from './components/list/List';
 import './index.css';
 
 const App = () => {
-    const  title = 'React Coin'
     return (
-
         <div>
             <Header />
 
