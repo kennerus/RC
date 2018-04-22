@@ -1,6 +1,9 @@
 import React from 'react';
 import { handleResponse } from "../../helpers";
 import { API_URL} from '../../config';
+import Loading from '../common/Loading';
+import  Table from './Table';
+
 class List extends React.Component {
   constructor() {
     super();
@@ -15,8 +18,9 @@ class List extends React.Component {
   componentDidMount() {
     this.setState({
       loading: true
-    })
-    fetch('${API_URL}/cryptocurrencies?page=1&perPage=20')
+    });
+
+    fetch(`${API_URL}/cryptocurrencies?page=1&perPage=20`)
       .then(handleResponse)
       .then((data) => {
         this.setState({
@@ -32,14 +36,36 @@ class List extends React.Component {
       });
   }
 
+  renderChangePercent(percent) {
+    if(percent > 0) {
+      return <span className="percent-raised">{percent}% &uarr;</span>
+    }
+    else if (percent < 0) {
+      return <span className="percent-fallen">{percent}% &darr;</span>
+    }
+  else {
+      return <span>{percent}</span>
+    }
+  }
+
   render() {
-    console.log(this.state)
-    if (this.state.loading) {
-      return <div>Loading...</div>
+    const { loading, error, currencies } = this.state;
+
+    // render only loading component, if loading state is set to true
+    if (loading) {
+      return <div className="loading-container"><Loading /></div>
+    }
+
+    // render inly error message, if error occured while fetching data
+    if (error) {
+      return <div className="error">{error}</div>
     }
 
     return (
-      <div>text</div>
+      <Table
+        currencies={currencies}
+        renderChangePercent = {this.renderChangePercent}
+      />
     )
   }
 }
